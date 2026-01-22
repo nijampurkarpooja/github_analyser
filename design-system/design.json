@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "system_name": "Soft-Neutral Developer Marketing System",
+    "primary_use": "Technical product websites and documentation hubs",
+    "visual_maturity": "High",
+    "tone": "Calm, trustworthy, modern",
+    "design_bias": "Understated over expressive"
+  },
+
+  "design_philosophy": {
+    "principles": [
+      "Clarity beats cleverness",
+      "Whitespace is a structural element",
+      "Hierarchy is established by scale and spacing",
+      "Visual calm signals technical credibility",
+      "Decorative elements never compete with content"
+    ],
+    "emotional_targets": [
+      "Confidence",
+      "Stability",
+      "Approachability",
+      "Focus"
+    ],
+    "avoid": [
+      "Visual noise",
+      "Hard contrast edges",
+      "Overuse of icons",
+      "Decorative-only components",
+      "Crowded layouts"
+    ]
+  },
+
+  "layout_system": {
+    "global_structure": {
+      "alignment": "Centered main column",
+      "content_width": "Moderately constrained for readability",
+      "outer_margins": "Large and consistent",
+      "scroll_rhythm": "Long vertical flow with clear section breaks"
+    },
+    "sections": {
+      "hero": {
+        "height": "Large, immersive",
+        "density": "Very low",
+        "focus": "Single primary action"
+      },
+      "feature_blocks": {
+        "layout": "Asymmetric but balanced",
+        "text_to_visual_ratio": "Low text density",
+        "grouping": "Clear separation by whitespace"
+      },
+      "grid_sections": {
+        "columns": 2,
+        "cards_per_row": 3,
+        "responsiveness": "Stacks cleanly without compression"
+      },
+      "footer": {
+        "density": "Medium",
+        "structure": "Multi-column informational layout"
+      }
+    }
+  },
+
+  "spacing_system": {
+    "spacing_philosophy": "Loose and breathable",
+    "scale": {
+      "xs": "Inline spacing only",
+      "sm": "Component internal padding",
+      "md": "Between related elements",
+      "lg": "Between sections",
+      "xl": "Major narrative breaks"
+    },
+    "rules": [
+      "Increase vertical spacing before adding dividers",
+      "Never compress sections to fit more content",
+      "Spacing conveys importance more than color"
+    ]
+  },
+
+  "typography": {
+    "font_style": {
+      "category": "Modern sans-serif",
+      "character": "Neutral, highly legible",
+      "visual_weight": "Balanced, not condensed"
+    },
+    "hierarchy": {
+      "primary_heading": {
+        "size": "Very large",
+        "weight": "Bold",
+        "line_height": "Relaxed"
+      },
+      "secondary_heading": {
+        "size": "Medium-large",
+        "weight": "Semi-bold"
+      },
+      "body_text": {
+        "size": "Standard",
+        "weight": "Regular",
+        "line_height": "Generous"
+      },
+      "supporting_text": {
+        "size": "Small",
+        "contrast": "Muted"
+      }
+    },
+    "rules": [
+      "Limit visible font sizes per screen",
+      "Use weight changes sparingly",
+      "Avoid decorative typography"
+    ]
+  },
+
+  "color_system": {
+    "backgrounds": {
+      "primary": "Soft light beige/off-white",
+      "secondary": "White or neutral surfaces",
+      "decorative": "Pastel gradients with soft hues (pink, orange, yellow, blue)"
+    },
+    "text_colors": {
+      "primary": "Dark gray/black",
+      "secondary": "Light gray/medium gray",
+      "tertiary": "Low-contrast gray"
+    },
+    "accent_colors": {
+      "active_indicator": "Light blue (for active states, navigation dots)",
+      "action_accent": "Orange (for specific action buttons)",
+      "primary_button": "Dark gray/black background with white text"
+    },
+    "accent_usage": {
+      "frequency": "Limited but purposeful",
+      "purpose": "Active states, primary actions, and specific emphasis",
+      "saturation": "Moderate, pastel tones for backgrounds"
+    },
+    "rules": [
+      "Accent colors signal interaction and active states",
+      "Gradients are atmospheric and decorative",
+      "Blue dots indicate active/selected states",
+      "Contrast is clear but not harsh"
+    ]
+  },
+
+  "component_system": {
+    "buttons": {
+      "shape": "Slightly rounded corners (not fully rounded)",
+      "sizes": "Comfortable touch targets (h-12 typical)",
+      "primary": {
+        "style": "Dark gray/black solid fill with white text",
+        "visual_priority": "High",
+        "border_radius": "Slightly rounded (rounded-lg to rounded-xl)"
+      },
+      "secondary": {
+        "style": "Outlined with dark border, transparent or light fill, may include icon",
+        "visual_priority": "Low",
+        "icon_usage": "Small circle or arrow icons acceptable"
+      },
+      "hover": "Gentle tonal shift, subtle background change"
+    },
+    "cards": {
+      "shape": "Rounded rectangles with consistent corner radius",
+      "surface": "White or soft pastel gradient backgrounds",
+      "shadow": "Minimal or none",
+      "content_density": "Low",
+      "gradient_usage": "Pastel gradients (pink, orange, yellow, blue) for decorative cards"
+    },
+    "inputs": {
+      "shape": "Rounded",
+      "border": "Subtle, light gray",
+      "focus_state": "Soft highlight, subtle border change",
+      "background": "White or light neutral"
+    },
+    "navigation": {
+      "style": "Text-forward, clean links",
+      "emphasis": "Active state via light blue circular dot indicator",
+      "density": "Low",
+      "active_indicator": "Small blue dot next to active link"
+    }
+  },
+
+  "interaction_design": {
+    "motion": {
+      "presence": "Minimal",
+      "purpose": "Feedback only",
+      "duration": "Short and unobtrusive"
+    },
+    "feedback": {
+      "hover": "Soft visual response",
+      "active": "Clear but restrained",
+      "loading": "Calm, non-distracting"
+    }
+  },
+
+  "iconography": {
+    "style": "Simple, minimalist icons (arrows, circles, magnifying glass)",
+    "usage": "Supplementary to text labels",
+    "rules": [
+      "Icons accompany labels, never replace them",
+      "Icons are small and unobtrusive",
+      "Arrow icons (→) used for links and actions",
+      "Circle icons used in buttons and indicators"
+    ]
+  },
+
+  "content_structure_rules": {
+    "headline_density": "One primary message per section",
+    "text_blocks": "Short and scannable",
+    "visual_balance": "Text never overwhelms visuals"
+  },
+
+  "ai_generation_guidelines": {
+    "preserve": [
+      "Whitespace hierarchy",
+      "Soft visual language",
+      "Low-density layouts",
+      "Muted color usage"
+    ],
+    "avoid": [
+      "Over-styling components",
+      "Adding decorative elements without purpose",
+      "Condensing sections to fit more content",
+      "Using color to replace hierarchy"
+    ],
+    "decision_heuristics": [
+      "When in doubt, remove rather than add",
+      "Prefer calm over exciting",
+      "Let spacing communicate structure",
+      "Design for trust, not attention"
+    ]
+  }
+}

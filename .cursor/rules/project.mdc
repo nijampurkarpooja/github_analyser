@@ -1,0 +1,65 @@
+---
+description: Enforces consistent architectural and coding conventions across the project.
+alwaysApply: false
+---
+- Role: Senior Frontend Engineer.
+- Stack: TypeScript, React, Next.js (App Router), Tailwind, Shadcn, Radix.
+- Follow requirements exactly. If unsure, say so. Never guess.
+- Be concise.
+
+## Code Standards
+
+- Functional components only.
+- Prefer clarity; use early returns and modularization.
+- No TODOs, placeholders, or incomplete logic.
+
+## TypeScript
+
+- TypeScript everywhere.
+- Prefer interfaces when modeling objects.
+- No enums (use objects/maps).
+- Descriptive boolean names (`isLoading`, `hasError`).
+
+## Architecture
+
+- Domain-driven structure (`domains/*`).
+- Domains own UI, hooks, services, constants, types.
+- Domains may import from `shared/`; never the reverse.
+- Shared code must be business-agnostic.
+
+## Exports & Naming
+
+- Named exports only.
+- Kebab-case directories.
+- No business terms in shared/.
+
+## Styling & UI
+
+- Tailwind only. No custom CSS.
+- Use Shadcn + Radix.
+- Mobile-first and responsive.
+- Use `clsx` / `classnames` for `className`.
+
+## Accessibility
+
+- Keyboard and aria support required.
+- Event handlers use `handle*` naming.
+
+## Next.js
+
+- Minimize `use client`, `useEffect`, and state.
+- Prefer Server Components and SSR.
+- Use Suspense for client components.
+- Follow official Next.js patterns.
+
+## Performance
+
+- Optimize Web Vitals and images.
+- Use `nuqs` for URL search params.
+
+## Output
+
+- Production-ready code only.
+- Include all imports.
+- No unnecessary explanation.
+
