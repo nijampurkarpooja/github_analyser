@@ -30,6 +30,21 @@ export default function Home() {
           </Link>
 
           <Link
+            href="/api-playground"
+            className="group rounded-2xl border border-solid border-neutral-200 bg-white p-6 transition-all hover:border-neutral-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
+          >
+            <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-50">
+              API Playground
+            </h2>
+            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+              Validate your API key and access the protected dashboard.
+            </p>
+            <span className="mt-4 inline-block text-sm font-medium text-neutral-900 transition-transform group-hover:translate-x-1 dark:text-neutral-50">
+              Try API Playground →
+            </span>
+          </Link>
+
+          <Link
             href="/analytics"
             className="group rounded-2xl border border-solid border-neutral-200 bg-white p-6 transition-all hover:border-neutral-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
           >

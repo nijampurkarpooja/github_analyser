@@ -115,3 +115,20 @@ export async function getApiKeyById(id: string): Promise<ApiKey | null> {
 
   return toApiKey(data as DbApiKey);
 }
+
+export async function getApiKeyByKey(key: string): Promise<ApiKey | null> {
+  const { data, error } = await supabase
+    .from("api_keys")
+    .select("*")
+    .eq("key", key)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return null; // No rows found
+    }
+    throw new Error(`Failed to fetch API key: ${error.message}`);
+  }
+
+  return toApiKey(data as DbApiKey);
+}

@@ -3,6 +3,7 @@
 import { classNames } from "@/shared/lib/classnames";
 import {
   ChartBarIcon,
+  CodeBracketIcon,
   Cog6ToothIcon,
   HomeIcon,
   KeyIcon,
@@ -19,6 +20,7 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { name: "Home", href: "/", icon: HomeIcon },
   { name: "API Keys", href: "/dashboards", icon: KeyIcon },
+  { name: "API Playground", href: "/api-playground", icon: CodeBracketIcon },
   { name: "Analytics", href: "/analytics", icon: ChartBarIcon },
   { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
 ];
