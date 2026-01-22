@@ -9,14 +9,21 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const key = getApiKeyById(id);
+  try {
+    const { id } = await params;
+    const key = await getApiKeyById(id);
 
-  if (!key) {
-    return NextResponse.json({ error: "API key not found" }, { status: 404 });
+    if (!key) {
+      return NextResponse.json({ error: "API key not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(key);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to fetch API key" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(key);
 }
 
 export async function PUT(
@@ -57,7 +64,7 @@ export async function PUT(
       );
     }
 
-    const updatedKey = updateApiKey(id, updates);
+    const updatedKey = await updateApiKey(id, updates);
 
     if (!updatedKey) {
       return NextResponse.json({ error: "API key not found" }, { status: 404 });
@@ -76,12 +83,14 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const success = removeApiKey(id);
-
-  if (!success) {
-    return NextResponse.json({ error: "API key not found" }, { status: 404 });
+  try {
+    const { id } = await params;
+    await removeApiKey(id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to delete API key" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true });
 }

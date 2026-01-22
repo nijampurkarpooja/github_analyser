@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { addApiKey, getApiKeys, type ApiKey } from "./store";
 
 export async function GET() {
-  const apiKeys = getApiKeys();
-  return NextResponse.json(apiKeys);
+  try {
+    const apiKeys = await getApiKeys();
+    return NextResponse.json(apiKeys);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to fetch API keys" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -37,9 +44,9 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    addApiKey(newKey);
+    const createdKey = await addApiKey(newKey);
 
-    return NextResponse.json(newKey, { status: 201 });
+    return NextResponse.json(createdKey, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: "Invalid request body" },
