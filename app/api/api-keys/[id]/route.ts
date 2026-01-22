@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
 import {
   getApiKeyById,
   deleteApiKey as removeApiKey,
   updateApiKey,
-} from "../store";
+} from "@/shared/lib/api-keys";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,

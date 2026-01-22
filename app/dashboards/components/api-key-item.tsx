@@ -1,6 +1,6 @@
 "use client";
 
-import { ApiKey } from "@/app/api/api-keys/store";
+import { ApiKey } from "@/shared/lib/api-keys";
 import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { maskApiKey } from "../utils";

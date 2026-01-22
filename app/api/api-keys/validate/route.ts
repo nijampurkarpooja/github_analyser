@@ -1,5 +1,5 @@
+import { getApiKeyByKey } from '@/shared/lib/api-keys';
 import { NextRequest, NextResponse } from "next/server";
-import { getApiKeyByKey } from "../store";
 
 export async function POST(request: NextRequest) {
   try {

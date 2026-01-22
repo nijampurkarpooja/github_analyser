@@ -1,5 +1,5 @@
+import { addApiKey, getApiKeys, type ApiKey } from '@/shared/lib/api-keys';
 import { NextRequest, NextResponse } from "next/server";
-import { addApiKey, getApiKeys, type ApiKey } from "./store";
 
 export async function GET() {
   try {

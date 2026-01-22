@@ -1,6 +1,6 @@
 "use client";
 
-import { ApiKey } from "@/app/api/api-keys/store";
+import { ApiKey } from "@/shared/lib/api-keys";
 import { useEffect, useState } from "react";
 
 export function useApiKeys() {

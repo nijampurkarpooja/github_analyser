@@ -1,7 +1,7 @@
 "use client";
 
-import { ApiKey } from "@/app/api/api-keys/store";
 import { Toast, useToast } from "@/shared/components/toast";
+import { ApiKey } from "@/shared/lib/api-keys";
 import { useState } from "react";
 import { ApiKeyList } from "./components/api-key-list";
 import { CreateApiKeyModal } from "./components/create-api-key-modal";
