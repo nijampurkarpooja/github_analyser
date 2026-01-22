@@ -8,24 +8,21 @@ const outputSchema = z.object({
   cool_facts: z.array(z.string()),
 });
 
+const model = new ChatOpenAI({
+  modelName: "gpt-4o-mini",
+  temperature: 0,
+  modelKwargs: {
+    response_format: { type: "json_object" },
+  },
+}).withStructuredOutput(outputSchema);
+
 const promptTemplate = ChatPromptTemplate.fromTemplate(
   "Summarize this GitHub repository from this README content:\n\n{readmeContent}\n\nRespond with a JSON object containing 'summary' (string) and 'cool_facts' (array of strings)."
 );
 
-
 const chain = RunnableSequence.from([
   promptTemplate,
-  new ChatOpenAI({
-    modelName: "gpt-4o-mini",
-    temperature: 0,
-    modelKwargs: {
-      response_format: { type: "json_object" },
-    },
-  }),
-  async (response) => {
-    const parsed = JSON.parse(response.content as string);
-    return outputSchema.parse(parsed);
-  },
+  model,
 ]);
 
 export async function summarizeRepository(readmeContent: string) {
