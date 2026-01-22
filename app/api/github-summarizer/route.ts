@@ -1,3 +1,4 @@
+import { summarizeRepository } from "@/shared/lib/github-summarizer";
 import { NextRequest, NextResponse } from "next/server";
 import { getApiKeyByKey } from "../../../shared/lib/api-keys";
 
@@ -33,10 +34,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ message: "GitHub summarization successful", readmeContent });
+    const result = await summarizeRepository(readmeContent);
+
+    return NextResponse.json({ message: "GitHub summarization successful", result });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to summarize GitHub repository" },
+      { message: "Failed to summarize GitHub repository", error: error instanceof Error ? error.message : "Unknown error" as string },
       { status: 500 }
     );
   }
@@ -59,3 +62,5 @@ async function getReadmeContent(githubUrl: string) {
 
   return await response.text();
 }
+
+
