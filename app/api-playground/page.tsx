@@ -14,7 +14,7 @@ export default function ApiPlaygroundPage() {
     e.preventDefault();
 
     if (!apiKey.trim()) {
-      showToast("Please enter an API key");
+      showToast("Please enter an API key", "error");
       return;
     }
 
@@ -30,14 +30,14 @@ export default function ApiPlaygroundPage() {
       const data = await response.json();
 
       if (response.ok && data.valid) {
-        showToast("API key validated successfully");
+        showToast("API key validated successfully", "success");
         router.push("/dashboards");
       } else {
-        showToast(data.error || "Invalid API key");
+        showToast(data.error || "Invalid API key", "error");
       }
     } catch (error) {
       console.error("Failed to validate API key:", error);
-      showToast("Failed to validate API key. Please try again.");
+      showToast("Failed to validate API key. Please try again.", "error");
     } finally {
       setIsValidating(false);
     }
@@ -89,6 +89,7 @@ export default function ApiPlaygroundPage() {
           key={toast.id}
           message={toast.message}
           onClose={() => removeToast(toast.id)}
+          variant={toast.variant}
         />
       ))}
     </div>

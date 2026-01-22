@@ -6,14 +6,14 @@ interface CreateApiKeyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (name: string, usageLimit: number) => Promise<{ success: boolean; error?: string }>;
-  showToast: (message: string) => void;
+  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
 }
 
 export function CreateApiKeyModal({
   isOpen,
   onClose,
   onCreate,
-  showToast,
+  showToast
 }: CreateApiKeyModalProps) {
   const [name, setName] = useState("");
   const [usageLimit, setUsageLimit] = useState(1000);
@@ -36,10 +36,10 @@ export function CreateApiKeyModal({
       setUsageLimit(1000);
       setUsageLimitError("");
       onClose();
-      showToast("API key created successfully");
+      showToast("API key created successfully", "success");
     } else {
       setUsageLimitError(result.error || "");
-      showToast(result.error ? `Failed to create API key: ${result.error}` : "Failed to create API key");
+      showToast(result.error ? `Failed to create API key: ${result.error}` : "Failed to create API key", "error");
     }
   };
 

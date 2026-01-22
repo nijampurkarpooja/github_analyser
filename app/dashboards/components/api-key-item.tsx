@@ -16,7 +16,7 @@ interface ApiKeyItemProps {
   isVisible: boolean;
   onToggleVisibility: () => void;
   isCopied: boolean;
-  showToast: (message: string) => void;
+  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
 }
 
 export function ApiKeyItem({
@@ -44,10 +44,10 @@ export function ApiKeyItem({
 
     if (result.success) {
       onCancelEdit();
-      showToast("API key updated successfully");
+      showToast("API key updated successfully", "success");
     } else {
       setEditUsageLimitError(result.error || "");
-      showToast(result.error ? `Failed to update API key: ${result.error}` : "Failed to update API key");
+      showToast(result.error ? `Failed to update API key: ${result.error}` : "Failed to update API key", "error");
     }
   };
 
@@ -55,9 +55,9 @@ export function ApiKeyItem({
     if (!confirm("Are you sure you want to delete this API key?")) return;
     const result = await onDelete();
     if (result.success) {
-      showToast("API key deleted successfully");
+      showToast("API key deleted successfully", "success");
     } else {
-      showToast(result.error ? `Failed to delete API key: ${result.error}` : "Failed to delete API key");
+      showToast(result.error ? `Failed to delete API key: ${result.error}` : "Failed to delete API key", "error");
     }
   };
 

@@ -20,13 +20,13 @@ export default function DashboardsPage() {
     try {
       await navigator.clipboard.writeText(key);
       setCopiedKeyId(keyId);
-      showToast("API key copied to clipboard");
+      showToast("API key copied to clipboard", "success");
       setTimeout(() => {
         setCopiedKeyId(null);
       }, 2000);
     } catch (error) {
       console.error("Failed to copy:", error);
-      showToast("Failed to copy API key");
+      showToast("Failed to copy API key", "error");
     }
   };
 
@@ -107,6 +107,7 @@ export default function DashboardsPage() {
           key={toast.id}
           message={toast.message}
           onClose={() => removeToast(toast.id)}
+          variant={toast.variant}
         />
       ))}
     </div>

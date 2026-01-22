@@ -15,7 +15,7 @@ interface ApiKeyListProps {
   onDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
   onCopy: (keyId: string, key: string) => void;
   onToggleVisibility: (keyId: string) => void;
-  showToast: (message: string) => void;
+  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
 }
 
 export function ApiKeyList({
