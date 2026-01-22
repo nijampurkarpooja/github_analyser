@@ -57,6 +57,11 @@ alwaysApply: false
 - Optimize Web Vitals and images.
 - Use `nuqs` for URL search params.
 
+## AI Change Policy
+- Do not modify files automatically.
+- Propose changes as diffs or minimal replacement snippets.
+- Apply changes only when explicitly instructed.
+
 ## Output
 
 - Production-ready code only.
