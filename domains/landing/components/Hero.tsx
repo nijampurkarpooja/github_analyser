@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center overflow-hidden px-4 sm:px-6 lg:px-8">
+    <section className="relative flex flex-col items-center overflow-hidden px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24">
       <div className="relative z-10 max-w-4xl text-center">
         <div className="mb-6 inline-block rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-4 py-1.5">
           <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
@@ -38,6 +38,13 @@ export function Hero() {
             Learn More
           </Link>
         </div>
+        <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1 justify-center">
+          <span className="font-medium">No credit card required</span>
+          <span>•</span>
+          <span className="font-medium">10 free analyses</span>
+          <span>•</span>
+          <span className="font-medium">Takes 30 seconds</span>
+        </p>
       </div>
     </section>
   );
