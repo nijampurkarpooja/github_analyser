@@ -1,4 +1,3 @@
-import { AppLayout } from "@/shared/components/layout/app-layout";
 import { AuthSessionProvider } from "@/shared/components/providers/session-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -15,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GitHub Analyser",
-  description: "Analyze GitHub repositories and manage API keys",
+  title: "CodeSight AI",
+  description: "AI-powered code analysis for your GitHub repositories",
 };
 
 export default function RootLayout({
@@ -29,9 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthSessionProvider>
-          <AppLayout appName="GitHub Analyser">{children}</AppLayout>
-        </AuthSessionProvider>
+        <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>
   );

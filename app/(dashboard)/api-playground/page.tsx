@@ -31,7 +31,7 @@ export default function ApiPlaygroundPage() {
 
       if (response.ok && data.valid) {
         showToast("API key validated successfully", "success");
-        router.push("/dashboards");
+        router.push("/dashboard");
       } else {
         showToast(data.error || "Invalid API key", "error");
       }

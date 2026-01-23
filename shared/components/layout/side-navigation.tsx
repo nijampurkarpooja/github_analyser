@@ -5,7 +5,6 @@ import {
   ChartBarIcon,
   CodeBracketIcon,
   Cog6ToothIcon,
-  HomeIcon,
   KeyIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -18,8 +17,7 @@ interface NavigationItem {
 }
 
 const navigationItems: NavigationItem[] = [
-  { name: "Home", href: "/", icon: HomeIcon },
-  { name: "API Keys", href: "/dashboards", icon: KeyIcon },
+  { name: "API Keys", href: "/dashboard", icon: KeyIcon },
   { name: "API Playground", href: "/api-playground", icon: CodeBracketIcon },
   { name: "Analytics", href: "/analytics", icon: ChartBarIcon },
   { name: "Settings", href: "/settings", icon: Cog6ToothIcon },
