@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/shared/lib/api-client";
 import { useEffect, useState } from "react";
 import type { ApiKey } from "../types";
 
@@ -9,11 +10,9 @@ export function useApiKeys() {
 
   const fetchApiKeys = async () => {
     try {
-      const response = await fetch("/api/api-keys");
-      if (response.ok) {
-        const data = await response.json();
-        setApiKeys(data);
-      }
+      const response = await api.get("/api/api-keys");
+      const data = await response.json();
+      setApiKeys(data);
     } catch (error) {
       console.error("Failed to fetch API keys:", error);
     } finally {
@@ -34,11 +33,7 @@ export function useApiKeys() {
     }
 
     try {
-      const response = await fetch("/api/api-keys", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, usageLimit }),
-      });
+      const response = await api.post("/api/api-keys", { name, usageLimit });
 
       if (response.ok) {
         const newKey = await response.json();
@@ -67,10 +62,9 @@ export function useApiKeys() {
     }
 
     try {
-      const response = await fetch(`/api/api-keys/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, usageLimit }),
+      const response = await api.put(`/api/api-keys/${id}`, {
+        name,
+        usageLimit,
       });
 
       if (response.ok) {
@@ -96,9 +90,7 @@ export function useApiKeys() {
     id: string
   ): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await fetch(`/api/api-keys/${id}`, {
-        method: "DELETE",
-      });
+      const response = await api.delete(`/api/api-keys/${id}`);
 
       if (response.ok) {
         setApiKeys((prev) => prev.filter((key) => key.id !== id));

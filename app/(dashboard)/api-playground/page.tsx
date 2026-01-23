@@ -1,6 +1,7 @@
 "use client";
 
 import { Toast, useToast } from "@/shared/components/ui/toast";
+import { api } from "@/shared/lib/api-client";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
@@ -21,10 +22,8 @@ export default function ApiPlaygroundPage() {
     setIsValidating(true);
 
     try {
-      const response = await fetch("/api/api-keys/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: apiKey.trim() }),
+      const response = await api.post("/api/api-keys/validate", {
+        key: apiKey.trim(),
       });
 
       const data = await response.json();
