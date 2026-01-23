@@ -10,9 +10,10 @@ interface PricingTier {
   badge?: string;
   cta: {
     text: string;
-    href: string;
+    href?: string;
     variant: "default" | "outline";
     meta?: string;
+    disabled?: boolean;
   };
   featured?: boolean;
 }
@@ -31,7 +32,13 @@ const pricingTiers: PricingTier[] = [
       { text: "API access", included: false },
       { text: "Analysis history", included: false },
     ],
-    cta: { text: "Get Started", href: "/signup", variant: "outline" },
+    cta: {
+      text: "Get Started",
+      href: "/signup",
+      variant: "default",
+      meta: "No credit card required",
+    },
+    featured: true,
   },
   {
     name: "Pro",
@@ -47,13 +54,11 @@ const pricingTiers: PricingTier[] = [
       { text: "Analysis history", included: true },
     ],
     cta: {
-      text: "Start Free Trial",
-      href: "/signup",
-      variant: "default",
-      meta: "7 days free, no credit card required",
+      text: "Coming Soon",
+      variant: "outline",
+      disabled: true,
     },
-    badge: "MOST POPULAR",
-    featured: true,
+    badge: "Coming Soon",
   },
   {
     name: "Team",
@@ -67,10 +72,11 @@ const pricingTiers: PricingTier[] = [
       { text: "Priority analysis queue", included: true },
     ],
     cta: {
-      text: "Upgrade to Team",
-      href: "/signup",
+      text: "Coming Soon",
       variant: "outline",
+      disabled: true,
     },
+    badge: "Coming Soon",
   },
 ];
 
@@ -135,12 +141,24 @@ export function Pricing() {
                   </div>
                 ))}
               </div>
-              <Link
-                href={tier.cta.href}
-                className={`w-full rounded-lg border border-neutral-300 bg-white px-6 py-3 text-center text-base font-medium text-neutral-900 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:hover:bg-neutral-800 ${tier.cta.variant === "default" ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600" : ""}`}
-              >
-                {tier.cta.text}
-              </Link>
+              {tier.cta.disabled ? (
+                <button
+                  className="w-full rounded-lg border border-neutral-300 bg-white px-6 py-3 text-center text-base font-medium text-neutral-900 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  {tier.cta.text}
+                  <span className="text-xs text-neutral-500 dark:text-neutral-500">
+                    {tier.cta.meta}
+                  </span>
+                </button>
+              ) : (
+                <Link
+                  href={tier.cta.href ?? ""}
+                  className={`w-full rounded-lg border border-neutral-300 bg-white px-6 py-3 text-center text-base font-medium text-neutral-900 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:hover:bg-neutral-800 ${tier.cta.variant === "default" ? "bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600" : ""}`}
+                >
+                  {tier.cta.text}
+                </Link>
+              )}
               {tier.cta.meta && (
                 <p className="text-xs text-neutral-500 dark:text-neutral-500 text-center">
                   {tier.cta.meta}
@@ -148,37 +166,6 @@ export function Pricing() {
               )}
             </div>
           ))}
-        </div>
-        <div className="p-6 sm:p-8 text-center dark:border-neutral-800/50  mx-auto max-w-2xl mt-16">
-          <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-4">
-            All plans include
-          </p>
-          <div className="flex flex-col gap-4 sm:flex-row items-center sm:justify-center sm:gap-8">
-            <div className="text-sm flex items-center gap-1">
-              <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                30-day
-              </span>
-              <span className="text-neutral-600 dark:text-neutral-400">
-                money-back guarantee
-              </span>
-            </div>
-            <div className="text-sm flex items-center gap-1">
-              <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                Real-time
-              </span>
-              <span className="text-neutral-600 dark:text-neutral-400">
-                updates & notifications
-              </span>
-            </div>
-            <div className="text-sm flex items-center gap-1">
-              <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                GitHub
-              </span>
-              <span className="text-neutral-600 dark:text-neutral-400">
-                integrations
-              </span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

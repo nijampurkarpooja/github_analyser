@@ -26,16 +26,16 @@ export function Hero() {
 
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <Link
-            href="/dashboard"
+            href="#features"
             className="rounded-lg bg-neutral-900 px-8 py-3 text-base font-medium text-neutral-50 transition-colors hover:bg-neutral-800 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-100"
           >
-            Get Started
+            Learn More
           </Link>
           <Link
-            href="#features"
+            href="#api-demo"
             className="rounded-lg border border-solid border-neutral-300 bg-white px-8 py-3 text-base font-medium text-neutral-900 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:hover:bg-neutral-800"
           >
-            Learn More
+            Try the API
           </Link>
         </div>
         <p className="mt-6 text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1 justify-center">
