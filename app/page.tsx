@@ -9,7 +9,8 @@ export default function Home() {
             Welcome to GitHub Analyser
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-            Analyze GitHub repositories, manage API keys, and track analytics all in one place.
+            Analyze GitHub repositories, manage API keys, and track analytics
+            all in one place.
           </p>
         </div>
 
@@ -22,7 +23,8 @@ export default function Home() {
               API Keys
             </h2>
             <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              Create and manage your API keys for accessing the GitHub Analyser API.
+              Create and manage your API keys for accessing the GitHub Analyser
+              API.
             </p>
             <span className="mt-4 inline-block text-sm font-medium text-neutral-900 transition-transform group-hover:translate-x-1 dark:text-neutral-50">
               Manage Keys →

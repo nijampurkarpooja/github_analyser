@@ -1,6 +1,6 @@
 "use client";
 
-import { ApiKey } from "@/shared/lib/api-keys";
+import type { ApiKey } from "../types";
 import { ApiKeyItem } from "./api-key-item";
 
 interface ApiKeyListProps {
@@ -11,11 +11,18 @@ interface ApiKeyListProps {
   copiedKeyId: string | null;
   onStartEdit: (key: ApiKey) => void;
   onCancelEdit: () => void;
-  onUpdate: (id: string, name: string, usageLimit: number) => Promise<{ success: boolean; error?: string }>;
+  onUpdate: (
+    id: string,
+    name: string,
+    usageLimit: number
+  ) => Promise<{ success: boolean; error?: string }>;
   onDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
   onCopy: (keyId: string, key: string) => void;
   onToggleVisibility: (keyId: string) => void;
-  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
+  showToast: (
+    message: string,
+    variant?: "success" | "error" | "info" | "warning"
+  ) => void;
 }
 
 export function ApiKeyList({

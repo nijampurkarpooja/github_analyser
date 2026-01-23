@@ -2,7 +2,7 @@ import {
   getApiKeyById,
   deleteApiKey as removeApiKey,
   updateApiKey,
-} from "@/shared/lib/api-keys";
+} from "@/domains/api-keys/lib/api-keys";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -20,7 +20,10 @@ export async function GET(
     return NextResponse.json(key);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch API key" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to fetch API key",
+      },
       { status: 500 }
     );
   }
@@ -89,7 +92,10 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to delete API key" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to delete API key",
+      },
       { status: 500 }
     );
   }

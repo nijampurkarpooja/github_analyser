@@ -1,13 +1,5 @@
 import { supabase } from "@/shared/lib/supabase";
-
-export interface ApiKey {
-  id: string;
-  name: string;
-  key: string;
-  usageLimit: number;
-  createdAt: string;
-  lastUsed?: string;
-}
+import type { ApiKey } from "../types";
 
 interface DbApiKey {
   id: string;

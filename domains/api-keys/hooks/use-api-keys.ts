@@ -1,7 +1,7 @@
 "use client";
 
-import { ApiKey } from "@/shared/lib/api-keys";
 import { useEffect, useState } from "react";
+import type { ApiKey } from "../types";
 
 export function useApiKeys() {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
@@ -25,7 +25,10 @@ export function useApiKeys() {
     fetchApiKeys();
   }, []);
 
-  const createApiKey = async (name: string, usageLimit: number): Promise<{ success: boolean; error?: string; data?: ApiKey }> => {
+  const createApiKey = async (
+    name: string,
+    usageLimit: number
+  ): Promise<{ success: boolean; error?: string; data?: ApiKey }> => {
     if (usageLimit <= 0) {
       return { success: false, error: "Monthly usage must be greater than 0" };
     }
@@ -43,7 +46,10 @@ export function useApiKeys() {
         return { success: true, data: newKey };
       } else {
         const error = await response.json();
-        return { success: false, error: error.error || "Failed to create API key" };
+        return {
+          success: false,
+          error: error.error || "Failed to create API key",
+        };
       }
     } catch (error) {
       console.error("Failed to create API key:", error);
@@ -51,7 +57,11 @@ export function useApiKeys() {
     }
   };
 
-  const updateApiKey = async (id: string, name: string, usageLimit: number): Promise<{ success: boolean; error?: string }> => {
+  const updateApiKey = async (
+    id: string,
+    name: string,
+    usageLimit: number
+  ): Promise<{ success: boolean; error?: string }> => {
     if (usageLimit <= 0) {
       return { success: false, error: "Monthly usage must be greater than 0" };
     }
@@ -65,11 +75,16 @@ export function useApiKeys() {
 
       if (response.ok) {
         const updatedKey = await response.json();
-        setApiKeys((prev) => prev.map((key) => (key.id === id ? updatedKey : key)));
+        setApiKeys((prev) =>
+          prev.map((key) => (key.id === id ? updatedKey : key))
+        );
         return { success: true };
       } else {
         const error = await response.json();
-        return { success: false, error: error.error || "Failed to update API key" };
+        return {
+          success: false,
+          error: error.error || "Failed to update API key",
+        };
       }
     } catch (error) {
       console.error("Failed to update API key:", error);
@@ -77,7 +92,9 @@ export function useApiKeys() {
     }
   };
 
-  const deleteApiKey = async (id: string): Promise<{ success: boolean; error?: string }> => {
+  const deleteApiKey = async (
+    id: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch(`/api/api-keys/${id}`, {
         method: "DELETE",
@@ -88,7 +105,10 @@ export function useApiKeys() {
         return { success: true };
       } else {
         const error = await response.json();
-        return { success: false, error: error.error || "Failed to delete API key" };
+        return {
+          success: false,
+          error: error.error || "Failed to delete API key",
+        };
       }
     } catch (error) {
       console.error("Failed to delete API key:", error);

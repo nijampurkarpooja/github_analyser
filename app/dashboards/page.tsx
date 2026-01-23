@@ -1,11 +1,11 @@
 "use client";
 
-import { Toast, useToast } from "@/shared/components/toast";
-import { ApiKey } from "@/shared/lib/api-keys";
+import { ApiKeyList } from "@/domains/api-keys/components/api-key-list";
+import { CreateApiKeyModal } from "@/domains/api-keys/components/create-api-key-modal";
+import { useApiKeys } from "@/domains/api-keys/hooks/use-api-keys";
+import type { ApiKey } from "@/domains/api-keys/types";
+import { Toast, useToast } from "@/shared/components/ui/toast";
 import { useState } from "react";
-import { ApiKeyList } from "./components/api-key-list";
-import { CreateApiKeyModal } from "./components/create-api-key-modal";
-import { useApiKeys } from "./hooks/use-api-keys";
 
 export default function DashboardsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +14,8 @@ export default function DashboardsPage() {
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
   const { toasts, showToast, removeToast } = useToast();
 
-  const { apiKeys, isLoading, createApiKey, updateApiKey, deleteApiKey } = useApiKeys();
+  const { apiKeys, isLoading, createApiKey, updateApiKey, deleteApiKey } =
+    useApiKeys();
 
   const handleCopyKey = async (keyId: string, key: string) => {
     try {

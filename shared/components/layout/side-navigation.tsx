@@ -1,6 +1,6 @@
 "use client";
 
-import { classNames } from "@/shared/lib/classnames";
+import { classNames } from "@/shared/lib/utils/classnames";
 import {
   ChartBarIcon,
   CodeBracketIcon,

@@ -1,4 +1,4 @@
-import { getApiKeyByKey } from '@/shared/lib/api-keys';
+import { getApiKeyByKey } from "@/domains/api-keys/lib/api-keys";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
     const apiKey = await getApiKeyByKey(key.trim());
 
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "Invalid API key" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }
 
     return NextResponse.json({ valid: true, apiKey });

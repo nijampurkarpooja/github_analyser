@@ -5,15 +5,21 @@ import { FormEvent, useState } from "react";
 interface CreateApiKeyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (name: string, usageLimit: number) => Promise<{ success: boolean; error?: string }>;
-  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
+  onCreate: (
+    name: string,
+    usageLimit: number
+  ) => Promise<{ success: boolean; error?: string }>;
+  showToast: (
+    message: string,
+    variant?: "success" | "error" | "info" | "warning"
+  ) => void;
 }
 
 export function CreateApiKeyModal({
   isOpen,
   onClose,
   onCreate,
-  showToast
+  showToast,
 }: CreateApiKeyModalProps) {
   const [name, setName] = useState("");
   const [usageLimit, setUsageLimit] = useState(1000);
@@ -39,7 +45,12 @@ export function CreateApiKeyModal({
       showToast("API key created successfully", "success");
     } else {
       setUsageLimitError(result.error || "");
-      showToast(result.error ? `Failed to create API key: ${result.error}` : "Failed to create API key", "error");
+      showToast(
+        result.error
+          ? `Failed to create API key: ${result.error}`
+          : "Failed to create API key",
+        "error"
+      );
     }
   };
 
@@ -95,10 +106,11 @@ export function CreateApiKeyModal({
               }}
               min="1"
               placeholder="1000"
-              className={`w-full rounded-lg border border-solid px-5 py-3 text-neutral-900 placeholder-neutral-500 focus:outline-none dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder-neutral-400 ${usageLimitError
-                ? "border-red-300 focus:border-red-400 dark:border-red-700 dark:focus:border-red-600"
-                : "border-neutral-300 focus:border-neutral-400 dark:border-neutral-700 dark:focus:border-neutral-600"
-                } bg-white`}
+              className={`w-full rounded-lg border border-solid px-5 py-3 text-neutral-900 placeholder-neutral-500 focus:outline-none dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder-neutral-400 ${
+                usageLimitError
+                  ? "border-red-300 focus:border-red-400 dark:border-red-700 dark:focus:border-red-600"
+                  : "border-neutral-300 focus:border-neutral-400 dark:border-neutral-700 dark:focus:border-neutral-600"
+              } bg-white`}
               required
               aria-label="Usage limit"
             />

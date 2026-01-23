@@ -30,9 +30,7 @@ export function AppLayout({ children, appName }: AppLayoutProps) {
       />
       <div className="flex flex-1">
         <SideNavigation isOpen={isMenuOpen} onClose={handleMenuClose} />
-        <main className="flex-1 lg:ml-0">
-          {children}
-        </main>
+        <main className="flex-1 lg:ml-0">{children}</main>
       </div>
       <Footer />
     </div>

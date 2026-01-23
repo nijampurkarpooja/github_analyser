@@ -1,8 +1,8 @@
 "use client";
 
-import { ApiKey } from "@/shared/lib/api-keys";
 import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import type { ApiKey } from "../types";
 import { maskApiKey } from "../utils";
 
 interface ApiKeyItemProps {
@@ -10,13 +10,19 @@ interface ApiKeyItemProps {
   isEditing: boolean;
   onStartEdit: () => void;
   onCancelEdit: () => void;
-  onUpdate: (name: string, usageLimit: number) => Promise<{ success: boolean; error?: string }>;
+  onUpdate: (
+    name: string,
+    usageLimit: number
+  ) => Promise<{ success: boolean; error?: string }>;
   onDelete: () => Promise<{ success: boolean; error?: string }>;
   onCopy: (key: string) => void;
   isVisible: boolean;
   onToggleVisibility: () => void;
   isCopied: boolean;
-  showToast: (message: string, variant?: "success" | "error" | "info" | "warning") => void;
+  showToast: (
+    message: string,
+    variant?: "success" | "error" | "info" | "warning"
+  ) => void;
 }
 
 export function ApiKeyItem({
@@ -47,7 +53,12 @@ export function ApiKeyItem({
       showToast("API key updated successfully", "success");
     } else {
       setEditUsageLimitError(result.error || "");
-      showToast(result.error ? `Failed to update API key: ${result.error}` : "Failed to update API key", "error");
+      showToast(
+        result.error
+          ? `Failed to update API key: ${result.error}`
+          : "Failed to update API key",
+        "error"
+      );
     }
   };
 
@@ -57,7 +68,12 @@ export function ApiKeyItem({
     if (result.success) {
       showToast("API key deleted successfully", "success");
     } else {
-      showToast(result.error ? `Failed to delete API key: ${result.error}` : "Failed to delete API key", "error");
+      showToast(
+        result.error
+          ? `Failed to delete API key: ${result.error}`
+          : "Failed to delete API key",
+        "error"
+      );
     }
   };
 
@@ -95,10 +111,11 @@ export function ApiKeyItem({
               }}
               min="1"
               placeholder="1000"
-              className={`w-full rounded-lg border border-solid px-5 py-3 text-neutral-900 placeholder-neutral-500 focus:outline-none dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder-neutral-400 ${editUsageLimitError
-                ? "border-red-300 focus:border-red-400 dark:border-red-700 dark:focus:border-red-600"
-                : "border-neutral-300 focus:border-neutral-400 dark:border-neutral-700 dark:focus:border-neutral-600"
-                } bg-white`}
+              className={`w-full rounded-lg border border-solid px-5 py-3 text-neutral-900 placeholder-neutral-500 focus:outline-none dark:bg-neutral-950 dark:text-neutral-50 dark:placeholder-neutral-400 ${
+                editUsageLimitError
+                  ? "border-red-300 focus:border-red-400 dark:border-red-700 dark:focus:border-red-600"
+                  : "border-neutral-300 focus:border-neutral-400 dark:border-neutral-700 dark:focus:border-neutral-600"
+              } bg-white`}
               aria-label="Edit usage limit"
             />
             {editUsageLimitError && (

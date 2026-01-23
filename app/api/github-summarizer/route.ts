@@ -1,6 +1,6 @@
-import { summarizeRepository } from "@/shared/lib/github-summarizer";
+import { getApiKeyByKey } from "@/domains/api-keys/lib/api-keys";
+import { summarizeRepository } from "@/domains/github/lib/summarizer";
 import { NextRequest, NextResponse } from "next/server";
-import { getApiKeyByKey } from "../../../shared/lib/api-keys";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,10 +19,7 @@ export async function POST(request: NextRequest) {
     const apiKeyObject = await getApiKeyByKey(apiKey.trim());
 
     if (!apiKeyObject) {
-      return NextResponse.json(
-        { message: "Invalid API key" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Invalid API key" }, { status: 401 });
     }
 
     const readmeContent = await getReadmeContent(githubUrl);
@@ -36,10 +33,17 @@ export async function POST(request: NextRequest) {
 
     const result = await summarizeRepository(readmeContent);
 
-    return NextResponse.json({ message: "GitHub summarization successful", result });
+    return NextResponse.json({
+      message: "GitHub summarization successful",
+      result,
+    });
   } catch (error) {
     return NextResponse.json(
-      { message: "Failed to summarize GitHub repository", error: error instanceof Error ? error.message : "Unknown error" as string },
+      {
+        message: "Failed to summarize GitHub repository",
+        error:
+          error instanceof Error ? error.message : ("Unknown error" as string),
+      },
       { status: 500 }
     );
   }
@@ -52,7 +56,7 @@ async function getReadmeContent(githubUrl: string) {
 
   const response = await fetch(apiUrl, {
     headers: {
-      "Accept": "application/vnd.github.v3+json",
+      Accept: "application/vnd.github.v3+json",
     },
   });
 
@@ -62,5 +66,3 @@ async function getReadmeContent(githubUrl: string) {
 
   return await response.text();
 }
-
-

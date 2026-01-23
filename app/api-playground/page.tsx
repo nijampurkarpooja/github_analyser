@@ -1,6 +1,6 @@
 "use client";
 
-import { Toast, useToast } from "@/shared/components/toast";
+import { Toast, useToast } from "@/shared/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 

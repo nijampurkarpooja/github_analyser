@@ -20,10 +20,7 @@ const promptTemplate = ChatPromptTemplate.fromTemplate(
   "Summarize this GitHub repository from this README content:\n\n{readmeContent}\n\nRespond with a JSON object containing 'summary' (string) and 'cool_facts' (array of strings)."
 );
 
-const chain = RunnableSequence.from([
-  promptTemplate,
-  model,
-]);
+const chain = RunnableSequence.from([promptTemplate, model]);
 
 export async function summarizeRepository(readmeContent: string) {
   return chain.invoke({ readmeContent });

@@ -1,4 +1,5 @@
-import { addApiKey, getApiKeys, type ApiKey } from '@/shared/lib/api-keys';
+import { addApiKey, getApiKeys } from "@/domains/api-keys/lib/api-keys";
+import type { ApiKey } from "@/domains/api-keys/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,7 +8,10 @@ export async function GET() {
     return NextResponse.json(apiKeys);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch API keys" },
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to fetch API keys",
+      },
       { status: 500 }
     );
   }
@@ -19,10 +23,7 @@ export async function POST(request: NextRequest) {
     const { name, usageLimit } = body;
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Name is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     if (
