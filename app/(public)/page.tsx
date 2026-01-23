@@ -1,6 +1,6 @@
 import { ApiDemo } from "@/domains/landing/components/api-demo";
 import { Features } from "@/domains/landing/components/features";
-import { Hero } from "@/domains/landing/components/hero";
+import { Hero } from "@/domains/landing/components/hero-section";
 import { Pricing } from "@/domains/landing/components/pricing";
 
 export default function Home() {
