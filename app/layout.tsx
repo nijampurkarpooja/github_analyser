@@ -1,4 +1,5 @@
 import { AppLayout } from "@/shared/components/layout/app-layout";
+import { AuthSessionProvider } from "@/shared/components/providers/session-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppLayout appName="GitHub Analyser">{children}</AppLayout>
+        <AuthSessionProvider>
+          <AppLayout appName="GitHub Analyser">{children}</AppLayout>
+        </AuthSessionProvider>
       </body>
     </html>
   );

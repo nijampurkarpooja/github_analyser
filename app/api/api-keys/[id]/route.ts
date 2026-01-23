@@ -3,6 +3,7 @@ import {
   deleteApiKey as removeApiKey,
   updateApiKey,
 } from "@/domains/api-keys/lib/api-keys";
+import { getAuthSession } from "@/domains/auth/lib/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -10,8 +11,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getAuthSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
-    const key = await getApiKeyById(id);
+    const key = await getApiKeyById(id, session.user.id);
 
     if (!key) {
       return NextResponse.json({ error: "API key not found" }, { status: 404 });
@@ -34,6 +40,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getAuthSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { name, usageLimit } = body;
@@ -67,7 +78,7 @@ export async function PUT(
       );
     }
 
-    const updatedKey = await updateApiKey(id, updates);
+    const updatedKey = await updateApiKey(id, updates, session.user.id);
 
     if (!updatedKey) {
       return NextResponse.json({ error: "API key not found" }, { status: 404 });
@@ -75,6 +86,12 @@ export async function PUT(
 
     return NextResponse.json(updatedKey);
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: "Invalid request body" },
       { status: 400 }
@@ -87,8 +104,20 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getAuthSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
-    await removeApiKey(id);
+
+    const key = await getApiKeyById(id, session.user.id);
+    if (!key) {
+      return NextResponse.json({ error: "API key not found" }, { status: 404 });
+    }
+
+    await removeApiKey(id, session.user.id);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json(

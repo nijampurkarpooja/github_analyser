@@ -2,6 +2,7 @@
 
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { AuthButton } from "../auth";
 
 interface HeaderProps {
   appName: string;
@@ -32,6 +33,7 @@ export function Header({ appName, onMenuToggle, isMenuOpen }: HeaderProps) {
             {appName}
           </Link>
         </div>
+        <AuthButton />
       </div>
     </header>
   );

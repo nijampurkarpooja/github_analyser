@@ -5,6 +5,7 @@ interface DbApiKey {
   id: string;
   name: string;
   key: string;
+  user_id: string;
   usage_limit: number;
   created_at: string;
   last_used?: string | null;
@@ -15,6 +16,7 @@ function toApiKey(dbKey: DbApiKey): ApiKey {
     id: dbKey.id,
     name: dbKey.name,
     key: dbKey.key,
+    userId: dbKey.user_id,
     usageLimit: dbKey.usage_limit,
     createdAt: dbKey.created_at,
     lastUsed: dbKey.last_used || undefined,
@@ -31,10 +33,15 @@ function toDbApiKey(key: Partial<ApiKey>): Partial<DbApiKey> {
   return dbKey;
 }
 
-export async function getApiKeys(): Promise<ApiKey[]> {
+export async function getApiKeys(userId: string): Promise<ApiKey[]> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const { data, error } = await supabase
     .from("api_keys")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -44,11 +51,15 @@ export async function getApiKeys(): Promise<ApiKey[]> {
   return (data || []).map(toApiKey);
 }
 
-export async function addApiKey(key: ApiKey): Promise<ApiKey> {
+export async function addApiKey(userId: string, key: ApiKey): Promise<ApiKey> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const dbKey = toDbApiKey(key);
   const { data, error } = await supabase
     .from("api_keys")
-    .insert([dbKey])
+    .insert([{ ...dbKey, user_id: userId }])
     .select()
     .single();
 
@@ -61,13 +72,19 @@ export async function addApiKey(key: ApiKey): Promise<ApiKey> {
 
 export async function updateApiKey(
   id: string,
-  updates: Partial<ApiKey>
+  updates: Partial<ApiKey>,
+  userId: string
 ): Promise<ApiKey | null> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const dbUpdates = toDbApiKey(updates);
   const { data, error } = await supabase
     .from("api_keys")
     .update(dbUpdates)
     .eq("id", id)
+    .eq("user_id", userId)
     .select()
     .single();
 
@@ -81,8 +98,19 @@ export async function updateApiKey(
   return toApiKey(data as DbApiKey);
 }
 
-export async function deleteApiKey(id: string): Promise<boolean> {
-  const { error } = await supabase.from("api_keys").delete().eq("id", id);
+export async function deleteApiKey(
+  id: string,
+  userId: string
+): Promise<boolean> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const { error } = await supabase
+    .from("api_keys")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", userId);
 
   if (error) {
     throw new Error(`Failed to delete API key: ${error.message}`);
@@ -91,11 +119,19 @@ export async function deleteApiKey(id: string): Promise<boolean> {
   return true;
 }
 
-export async function getApiKeyById(id: string): Promise<ApiKey | null> {
+export async function getApiKeyById(
+  id: string,
+  userId: string
+): Promise<ApiKey | null> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const { data, error } = await supabase
     .from("api_keys")
     .select("*")
     .eq("id", id)
+    .eq("user_id", userId)
     .single();
 
   if (error) {
@@ -108,12 +144,20 @@ export async function getApiKeyById(id: string): Promise<ApiKey | null> {
   return toApiKey(data as DbApiKey);
 }
 
-export async function getApiKeyByKey(key: string): Promise<ApiKey | null> {
+export async function getApiKeyByKey(
+  key: string,
+  userId: string
+): Promise<ApiKey | null> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
   const { data, error } = await supabase
     .from("api_keys")
     .select("*")
     .eq("key", key)
-    .single();
+    .eq("user_id", userId)
+    .maybeSingle();
 
   if (error) {
     if (error.code === "PGRST116") {

@@ -1,10 +1,15 @@
 import { addApiKey, getApiKeys } from "@/domains/api-keys/lib/api-keys";
 import type { ApiKey } from "@/domains/api-keys/types";
+import { getAuthSession } from "@/domains/auth/lib/auth-server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const apiKeys = await getApiKeys();
+    const session = await getAuthSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const apiKeys = await getApiKeys(session.user.id);
     return NextResponse.json(apiKeys);
   } catch (error) {
     return NextResponse.json(
@@ -19,6 +24,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getAuthSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { name, usageLimit } = body;
 
@@ -43,12 +53,26 @@ export async function POST(request: NextRequest) {
       key: `sk_${crypto.randomUUID().replace(/-/g, "")}`,
       usageLimit: usageLimit,
       createdAt: new Date().toISOString(),
+      userId: session.user.id,
     };
 
-    const createdKey = await addApiKey(newKey);
+    const createdKey = await addApiKey(session.user.id, newKey);
+
+    if (!createdKey) {
+      return NextResponse.json(
+        { error: "Failed to create API key" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(createdKey, { status: 201 });
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: "Invalid request body" },
       { status: 400 }
