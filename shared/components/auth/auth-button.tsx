@@ -15,11 +15,10 @@ import {
   KeyIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
 import { Fragment } from "react/jsx-runtime";
 
 interface NavigationItem {
@@ -99,12 +98,11 @@ export function AuthButton() {
   }
 
   return (
-    <button
-      onClick={() => signIn("google")}
+    <Link
+      href="/auth"
       className="flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-200"
     >
-      <FcGoogle className="mr-2 h-4 w-4" />
-      Sign in with Google
-    </button>
+      Sign in
+    </Link>
   );
 }

@@ -31,7 +31,7 @@ export function ApiDemo() {
     if (session) {
       router.push("/api-playground");
     } else {
-      router.push("/signin");
+      router.push("/auth");
     }
   };
 
