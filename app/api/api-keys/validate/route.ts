@@ -17,9 +17,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKeyRecord = await getApiKeyByKey(apiKey.trim(), session.user.id);
+    const trimmedKey = apiKey.trim();
+    const apiKeyRegex = /^sk_[a-zA-Z0-9]{32}$/;
+    if (!apiKeyRegex.test(trimmedKey)) {
+      return NextResponse.json(
+        { error: "Invalid API key format" },
+        { status: 400 }
+      );
+    }
+
+    let apiKeyRecord;
+    try {
+      apiKeyRecord = await getApiKeyByKey(trimmedKey, session.user.id);
+    } catch (dbError) {
+      if (dbError instanceof Error) {
+        const errorMessage = dbError.message.toLowerCase();
+
+        if (
+          errorMessage.includes("connection") ||
+          errorMessage.includes("network")
+        ) {
+          return NextResponse.json(
+            { error: "Service temporarily unavailable" },
+            { status: 503 }
+          );
+        }
+
+        console.error("Database error during API key validation:", {
+          userId: session.user.id,
+          error: dbError.message,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return NextResponse.json(
+        { error: "Failed to validate API key" },
+        { status: 500 }
+      );
+    }
 
     if (!apiKeyRecord) {
+      console.warn("Invalid API key validation attempt", {
+        userId: session.user.id,
+        keyPrefix: trimmedKey.substring(0, 5) + "...",
+        timestamp: new Date().toISOString(),
+      });
+
       return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }
 
@@ -30,17 +73,17 @@ export async function POST(request: NextRequest) {
       remaining: Math.max(0, apiKeyRecord.usageLimit - apiKeyRecord.usage),
     });
   } catch (error) {
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: "Invalid JSON in request body" },
-        { status: 400 }
-      );
-    }
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+
+    console.error("Unexpected error in API key validation:", {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString(),
+    });
+
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error ? error.message : "Failed to validate API key",
-      },
+      { error: "Failed to validate API key" },
       { status: 500 }
     );
   }
