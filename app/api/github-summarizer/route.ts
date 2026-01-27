@@ -3,6 +3,8 @@ import {
   incrementApiKeyUsage,
 } from "@/domains/api-keys/lib/api-keys";
 import { getAuthSession } from "@/domains/auth/lib/auth-server";
+import { getReadmeContent } from "@/domains/github/lib/readme";
+import { getRepositoryMetadata } from "@/domains/github/lib/repository-metadata";
 import { summarizeRepository } from "@/domains/github/lib/summarizer";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -72,16 +74,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const readmeContent = await getReadmeContent(normalizedUrl);
-    if (!readmeContent) {
-      return NextResponse.json(
-        { error: "Failed to fetch README content from GitHub" },
-        { status: 500 }
-      );
-    }
+    // Fetch repository metadata and README content in parallel for better performance
+    const [repositoryMetadata, readmeContent] = await Promise.all([
+      getRepositoryMetadata(normalizedUrl),
+      getReadmeContent(normalizedUrl),
+    ]);
 
     // Add timeout for summarization (60 seconds)
-    const summarizationPromise = summarizeRepository(readmeContent);
+    const summarizationPromise = summarizeRepository(
+      readmeContent,
+      repositoryMetadata
+    );
+
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(
         () =>
@@ -150,96 +154,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: errorMessage }, { status: 504 });
     }
 
+    if (errorMessage.includes("not found")) {
+      return NextResponse.json({ error: errorMessage }, { status: 404 });
+    }
+
     return NextResponse.json(
       { error: errorMessage || "Failed to summarize GitHub repository" },
       { status: 500 }
     );
-  }
-}
-
-async function getReadmeContent(githubUrl: string) {
-  try {
-    let url: URL;
-    try {
-      url = new URL(githubUrl);
-    } catch {
-      throw new Error("Invalid GitHub URL format");
-    }
-
-    const pathParts = url.pathname.split("/").filter(Boolean);
-
-    if (pathParts.length < 2 || url.hostname !== "github.com") {
-      throw new Error("Invalid GitHub URL format");
-    }
-
-    const owner = pathParts[0];
-    const repo = pathParts[1];
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/readme`;
-
-    // Add timeout for GitHub API call (30 seconds)
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-    try {
-      const response = await fetch(apiUrl, {
-        headers: {
-          Accept: "application/vnd.github.v3+json",
-        },
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error("Repository not found or README does not exist");
-        }
-        if (response.status === 403 || response.status === 429) {
-          const rateLimitReset = response.headers.get("X-RateLimit-Reset");
-          let errorMessage = "GitHub API rate limit exceeded";
-
-          if (rateLimitReset) {
-            const resetDate = new Date(parseInt(rateLimitReset) * 1000);
-            const minutesUntilReset = Math.ceil(
-              (resetDate.getTime() - Date.now()) / 60000
-            );
-            errorMessage += `. Try again in ${minutesUntilReset} minute${minutesUntilReset !== 1 ? "s" : ""}`;
-          }
-
-          throw new Error(errorMessage);
-        }
-        throw new Error(
-          `Failed to fetch README content: ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
-
-      if (!data.content || typeof data.content !== "string") {
-        throw new Error("README content is missing or invalid");
-      }
-
-      const content = Buffer.from(data.content, "base64").toString("utf-8");
-      return content;
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      if (fetchError instanceof Error && fetchError.name === "AbortError") {
-        throw new Error(
-          "Request timeout: GitHub API did not respond within 30 seconds"
-        );
-      }
-      throw fetchError;
-    }
-  } catch (error) {
-    const originalMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    if (
-      originalMessage.includes("Failed to fetch") ||
-      originalMessage.includes("Invalid") ||
-      originalMessage.includes("timeout")
-    ) {
-      throw error;
-    }
-    throw new Error(`Failed to fetch README content: ${originalMessage}`);
   }
 }
