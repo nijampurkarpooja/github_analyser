@@ -9,23 +9,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { key } = body;
-
-    if (!key || typeof key !== "string" || key.trim().length === 0) {
+    const apiKey = request.headers.get("x-api-key");
+    if (!apiKey || typeof apiKey !== "string" || apiKey.trim().length === 0) {
       return NextResponse.json(
         { error: "API key is required" },
         { status: 400 }
       );
     }
 
-    const apiKey = await getApiKeyByKey(key.trim(), session.user.id);
+    const apiKeyRecord = await getApiKeyByKey(apiKey.trim(), session.user.id);
 
-    if (!apiKey) {
+    if (!apiKeyRecord) {
       return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }
 
-    return NextResponse.json({ valid: true });
+    return NextResponse.json({
+      valid: true,
+      usage: apiKeyRecord.usage,
+      usageLimit: apiKeyRecord.usageLimit,
+      remaining: Math.max(0, apiKeyRecord.usageLimit - apiKeyRecord.usage),
+    });
   } catch (error) {
     if (error instanceof SyntaxError) {
       return NextResponse.json(
@@ -34,8 +37,11 @@ export async function POST(request: NextRequest) {
       );
     }
     return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 }
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to validate API key",
+      },
+      { status: 500 }
     );
   }
 }

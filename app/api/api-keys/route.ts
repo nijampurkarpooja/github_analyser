@@ -39,10 +39,10 @@ export async function POST(request: NextRequest) {
     if (
       usageLimit === undefined ||
       typeof usageLimit !== "number" ||
-      usageLimit < 0
+      usageLimit < 1
     ) {
       return NextResponse.json(
-        { error: "Usage limit must be a non-negative number" },
+        { error: "Usage limit must be at least 1" },
         { status: 400 }
       );
     }
@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
       name: name.trim(),
       key: `sk_${crypto.randomUUID().replace(/-/g, "")}`,
       usageLimit: usageLimit,
+      usage: 0,
       createdAt: new Date().toISOString(),
       userId: session.user.id,
     };
@@ -73,9 +74,16 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 }
-    );
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to create API key";
+
+    const statusCode = errorMessage.includes("Unauthorized")
+      ? 401
+      : errorMessage.includes("required") || errorMessage.includes("Invalid")
+        ? 400
+        : 500;
+
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }

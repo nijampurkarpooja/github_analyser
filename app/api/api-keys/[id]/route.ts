@@ -12,7 +12,7 @@ export async function GET(
 ) {
   try {
     const session = await getAuthSession();
-    if (!session) {
+    if (!session || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -62,9 +62,9 @@ export async function PUT(
     }
 
     if (usageLimit !== undefined) {
-      if (typeof usageLimit !== "number" || usageLimit < 0) {
+      if (typeof usageLimit !== "number" || usageLimit < 1) {
         return NextResponse.json(
-          { error: "Usage limit must be a non-negative number" },
+          { error: "Usage limit must be at least 1" },
           { status: 400 }
         );
       }
@@ -92,10 +92,17 @@ export async function PUT(
         { status: 400 }
       );
     }
-    return NextResponse.json(
-      { error: "Invalid request body" },
-      { status: 400 }
-    );
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to update API key";
+
+    const statusCode = errorMessage.includes("Unauthorized")
+      ? 401
+      : errorMessage.includes("required") || errorMessage.includes("Invalid")
+        ? 400
+        : 500;
+
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }
 

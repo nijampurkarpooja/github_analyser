@@ -151,7 +151,7 @@ export function ApiKeyItem({
             {apiKey.name}
           </h3>
           <span className="text-sm text-neutral-600 dark:text-neutral-400">
-            Usage: {apiKey.usageLimit.toLocaleString()}/month
+            {apiKey.usage} / {apiKey.usageLimit} keys used
           </span>
         </div>
         <div className="mt-2 flex items-center gap-3">

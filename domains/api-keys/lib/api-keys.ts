@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/lib/supabase";
+import { supabaseServer } from "@/shared/lib/supabase-server";
 import type { ApiKey } from "../types";
 
 interface DbApiKey {
@@ -7,6 +7,7 @@ interface DbApiKey {
   key: string;
   user_id: string;
   usage_limit: number;
+  usage: number;
   created_at: string;
   last_used?: string | null;
 }
@@ -18,6 +19,7 @@ function toApiKey(dbKey: DbApiKey): ApiKey {
     key: dbKey.key,
     userId: dbKey.user_id,
     usageLimit: dbKey.usage_limit,
+    usage: dbKey.usage,
     createdAt: dbKey.created_at,
     lastUsed: dbKey.last_used || undefined,
   };
@@ -25,9 +27,11 @@ function toApiKey(dbKey: DbApiKey): ApiKey {
 
 function toDbApiKey(key: Partial<ApiKey>): Partial<DbApiKey> {
   const dbKey: Partial<DbApiKey> = {};
+  if (key.id !== undefined) dbKey.id = key.id;
   if (key.name !== undefined) dbKey.name = key.name;
   if (key.key !== undefined) dbKey.key = key.key;
   if (key.usageLimit !== undefined) dbKey.usage_limit = key.usageLimit;
+  if (key.usage !== undefined) dbKey.usage = key.usage;
   if (key.createdAt !== undefined) dbKey.created_at = key.createdAt;
   if (key.lastUsed !== undefined) dbKey.last_used = key.lastUsed || null;
   return dbKey;
@@ -37,8 +41,7 @@ export async function getApiKeys(userId: string): Promise<ApiKey[]> {
   if (!userId) {
     throw new Error("User ID is required");
   }
-
-  const { data, error } = await supabase
+  const { data, error } = await supabaseServer
     .from("api_keys")
     .select("*")
     .eq("user_id", userId)
@@ -57,9 +60,18 @@ export async function addApiKey(userId: string, key: ApiKey): Promise<ApiKey> {
   }
 
   const dbKey = toDbApiKey(key);
-  const { data, error } = await supabase
+  const insertData = {
+    ...dbKey,
+    user_id: userId,
+    name: dbKey.name || key.name,
+    key: dbKey.key || key.key,
+    usage_limit: dbKey.usage_limit ?? key.usageLimit ?? 0,
+    usage: dbKey.usage ?? key.usage ?? 0,
+  };
+
+  const { data, error } = await supabaseServer
     .from("api_keys")
-    .insert([{ ...dbKey, user_id: userId }])
+    .insert([insertData])
     .select()
     .single();
 
@@ -75,12 +87,15 @@ export async function updateApiKey(
   updates: Partial<ApiKey>,
   userId: string
 ): Promise<ApiKey | null> {
+  if (!id) {
+    throw new Error("Key ID is required");
+  }
   if (!userId) {
     throw new Error("User ID is required");
   }
 
   const dbUpdates = toDbApiKey(updates);
-  const { data, error } = await supabase
+  const { data, error } = await supabaseServer
     .from("api_keys")
     .update(dbUpdates)
     .eq("id", id)
@@ -102,11 +117,14 @@ export async function deleteApiKey(
   id: string,
   userId: string
 ): Promise<boolean> {
+  if (!id) {
+    throw new Error("Key ID is required");
+  }
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  const { error } = await supabase
+  const { error } = await supabaseServer
     .from("api_keys")
     .delete()
     .eq("id", id)
@@ -123,11 +141,14 @@ export async function getApiKeyById(
   id: string,
   userId: string
 ): Promise<ApiKey | null> {
+  if (!id) {
+    throw new Error("Key ID is required");
+  }
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseServer
     .from("api_keys")
     .select("*")
     .eq("id", id)
@@ -148,11 +169,14 @@ export async function getApiKeyByKey(
   key: string,
   userId: string
 ): Promise<ApiKey | null> {
+  if (!key) {
+    throw new Error("Key is required");
+  }
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseServer
     .from("api_keys")
     .select("*")
     .eq("key", key)
@@ -167,4 +191,80 @@ export async function getApiKeyByKey(
   }
 
   return toApiKey(data as DbApiKey);
+}
+
+export async function getApiKeyUsage(
+  key: string,
+  userId: string
+): Promise<{ usage: number; usageLimit: number }> {
+  if (!key) {
+    throw new Error("Key is required");
+  }
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const { data, error } = await supabaseServer
+    .from("api_keys")
+    .select("usage,usage_limit")
+    .eq("key", key)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to fetch API key usage: ${error.message}`);
+  }
+
+  if (!data) {
+    throw new Error("API key not found");
+  }
+
+  return { usage: data.usage ?? 0, usageLimit: data.usage_limit ?? 0 };
+}
+
+export async function hasApiKeyReachedUsageLimit(
+  key: string,
+  userId: string
+): Promise<boolean> {
+  if (!key) {
+    throw new Error("API key is required");
+  }
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const { usage, usageLimit } = await getApiKeyUsage(key, userId);
+  return usage >= usageLimit;
+}
+
+export async function incrementApiKeyUsage(
+  key: string,
+  userId: string
+): Promise<ApiKey | null> {
+  if (!key) {
+    throw new Error("Key is required");
+  }
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  // Use atomic database function to increment usage and check limit
+  const { data, error } = await supabaseServer.rpc("increment_api_key_usage", {
+    p_key: key,
+    p_user_id: userId,
+  });
+
+  if (error) {
+    if (error.message.includes("usage limit exceeded")) {
+      throw new Error("API key usage limit exceeded");
+    }
+    throw new Error(`Failed to increment API key usage: ${error.message}`);
+  }
+
+  if (!data || data.length === 0) {
+    // Key doesn't exist or limit was reached
+    return null;
+  }
+
+  return toApiKey(data[0] as DbApiKey);
 }
