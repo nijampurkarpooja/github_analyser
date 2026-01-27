@@ -7,6 +7,14 @@ import { FormEvent, useState } from "react";
 interface Summary {
   summary: string;
   cool_facts: string[];
+  stars: number;
+  latest_version: string | null;
+  is_active: boolean;
+  maintenance_status: string;
+  programming_languages: string[];
+  open_issues: number;
+  closed_issues: number;
+  total_issues: number;
 }
 
 export default function ApiPlaygroundPage() {
@@ -184,35 +192,12 @@ export default function ApiPlaygroundPage() {
               </div>
             )}
 
+            {/* JSON View */}
             {summary !== null && (
-              <div className="mt-6 flex flex-col gap-4">
-                {summary?.summary && (
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
-                      Summary
-                    </h3>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                      {summary.summary}
-                    </p>
-                  </div>
-                )}
-                {summary.cool_facts.length > 0 && (
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
-                      Cool Facts
-                    </h3>
-                    <ul className="list-disc list-inside">
-                      {summary.cool_facts.map((fact) => (
-                        <li
-                          key={fact}
-                          className="text-sm text-neutral-600 dark:text-neutral-400"
-                        >
-                          {fact}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              <div className="mt-6">
+                <pre className="text-sm text-neutral-600 dark:text-neutral-400 whitespace-pre-wrap">
+                  {JSON.stringify(summary, null, 2)}
+                </pre>
               </div>
             )}
           </form>
